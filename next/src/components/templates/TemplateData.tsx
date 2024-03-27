@@ -19,9 +19,19 @@ import {
   FaRegNewspaper,
   FaShoppingCart,
   FaStarAndCrescent,
+  FaChartPie,
 } from "react-icons/fa";
 
 export const TEMPLATE_DATA: TemplateModel[] = [
+  {
+    name: "SalesGPT",
+    icon: <FaChartPie />,
+    category: "Business",
+    description: "You are an assistant to a salesperson. Assist the salesperson with all the queries in order get more customers. Include the origin and logic of information for the responses.",
+    promptTemplate:
+      "Compile 5 potential new customers for logistics business",
+    placeholder: "Sales assistant",
+  },
   {
     name: "ResearchGPT",
     icon: <FaBookReader />,
