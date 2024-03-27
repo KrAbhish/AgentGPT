@@ -3,6 +3,7 @@ from typing import List, Optional
 from fastapi import APIRouter, Depends
 from fastapi.responses import StreamingResponse as FastAPIStreamingResponse
 from pydantic import BaseModel
+from loguru import logger
 
 from reworkd_platform.schemas.agent import (
     AgentChat,
@@ -38,7 +39,9 @@ async def start_tasks(
     req_body: AgentRun = Depends(agent_start_validator),
     agent_service: AgentService = Depends(get_agent_service(agent_start_validator)),
 ) -> NewTasksResponse:
+    logger.info(f"Starting agent run")
     new_tasks = await agent_service.start_goal_agent(goal=req_body.goal)
+    logger.info(f"Initializing new tasks {new_tasks}")
     return NewTasksResponse(newTasks=new_tasks, run_id=req_body.run_id)
 
 
@@ -47,6 +50,7 @@ async def analyze_tasks(
     req_body: AgentTaskAnalyze = Depends(agent_analyze_validator),
     agent_service: AgentService = Depends(get_agent_service(agent_analyze_validator)),
 ) -> Analysis:
+    logger.info(f"Analyze tasks")
     return await agent_service.analyze_task_agent(
         goal=req_body.goal,
         task=req_body.task or "",
@@ -61,6 +65,7 @@ async def execute_tasks(
         get_agent_service(validator=agent_execute_validator, streaming=True),
     ),
 ) -> FastAPIStreamingResponse:
+    logger.info(f"Task execution {req_body}")
     return await agent_service.execute_task_agent(
         goal=req_body.goal or "",
         task=req_body.task or "",
@@ -73,6 +78,7 @@ async def create_tasks(
     req_body: AgentTaskCreate = Depends(agent_create_validator),
     agent_service: AgentService = Depends(get_agent_service(agent_create_validator)),
 ) -> NewTasksResponse:
+    logger.info(f"Task creation initialized {req_body}")
     new_tasks = await agent_service.create_tasks_agent(
         goal=req_body.goal,
         tasks=req_body.tasks or [],
@@ -80,6 +86,7 @@ async def create_tasks(
         result=req_body.result or "",
         completed_tasks=req_body.completed_tasks or [],
     )
+    logger.info(f"Created tasks {new_tasks}")
     return NewTasksResponse(newTasks=new_tasks, run_id=req_body.run_id)
 
 
@@ -94,6 +101,7 @@ async def summarize(
         ),
     ),
 ) -> FastAPIStreamingResponse:
+    logger.info(f"Summarization")
     return await agent_service.summarize_task_agent(
         goal=req_body.goal or "",
         results=req_body.results,
@@ -111,6 +119,7 @@ async def chat(
         ),
     ),
 ) -> FastAPIStreamingResponse:
+    logger.info(f"Chat endpoint")
     return await agent_service.chat(
         message=req_body.message,
         results=req_body.results,
@@ -130,7 +139,9 @@ class ToolsResponse(BaseModel):
 
 @router.get("/tools")
 async def get_user_tools() -> ToolsResponse:
+    logger.info(f"Getting available tools")
     tools = get_external_tools()
+    logger.info(f"Following are the available tools {tools}")
     formatted_tools = [
         ToolModel(
             name=get_tool_name(tool),

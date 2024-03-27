@@ -61,7 +61,7 @@ class OpenAIAgentService(AgentService):
         prompt = ChatPromptTemplate.from_messages(
             [SystemMessagePromptTemplate(prompt=start_goal_prompt)]
         )
-
+        logger.info(f"Tasks creation prompt: {prompt} ")
         self.token_service.calculate_max_tokens(
             self.model,
             prompt.format_prompt(
@@ -88,6 +88,7 @@ class OpenAIAgentService(AgentService):
     async def analyze_task_agent(
         self, *, goal: str, task: str, tool_names: List[str]
     ) -> Analysis:
+        logger.info(f"Analyze task")
         user_tools = await get_user_tools(tool_names, self.user, self.oauth_crud)
         functions = list(map(get_tool_function, user_tools))
         prompt = analyze_task_prompt.format_prompt(
@@ -95,6 +96,7 @@ class OpenAIAgentService(AgentService):
             task=task,
             language=self.settings.language,
         )
+        logger.info(f"Prompt for task analysis {prompt}")
 
         self.token_service.calculate_max_tokens(
             self.model,
@@ -135,6 +137,7 @@ class OpenAIAgentService(AgentService):
             self.model.max_tokens = max(self.model.max_tokens - 1000, 3000)
 
         tool_class = get_tool_from_name(analysis.action)
+        logger.info(f"Execute task")
         return await tool_class(self.model, self.settings.language).call(
             goal,
             task,
@@ -155,6 +158,7 @@ class OpenAIAgentService(AgentService):
         prompt = ChatPromptTemplate.from_messages(
             [SystemMessagePromptTemplate(prompt=create_tasks_prompt)]
         )
+        logger.info(f"Creating tasks")
 
         args = {
             "goal": goal,
@@ -171,6 +175,7 @@ class OpenAIAgentService(AgentService):
         completion = await call_model_with_handling(
             self.model, prompt, args, settings=self.settings, callbacks=self.callbacks
         )
+        logger.info(f"Following are the new tasks: {completion}")
 
         previous_tasks = (completed_tasks or []) + tasks
         return [completion] if completion not in previous_tasks else []
@@ -210,6 +215,7 @@ class OpenAIAgentService(AgentService):
                 HumanMessage(content=message),
             ]
         )
+        logger.info(f"Chat: {prompt}")
 
         self.token_service.calculate_max_tokens(
             self.model,
