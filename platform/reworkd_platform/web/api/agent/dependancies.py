@@ -16,7 +16,9 @@ from reworkd_platform.schemas.agent import (
     Loop_Step,
 )
 from reworkd_platform.schemas.user import UserBase
+from reworkd_platform.settings import settings
 from reworkd_platform.web.api.dependencies import get_current_user
+from loguru import logger
 
 T = TypeVar(
     "T", AgentTaskAnalyze, AgentTaskExecute, AgentTaskCreate, AgentSummarize, AgentChat
@@ -27,22 +29,29 @@ def agent_crud(
     user: UserBase = Depends(get_current_user),
     session: AsyncSession = Depends(get_db_session),
 ) -> AgentCRUD:
-    return AgentCRUD(session, user)
+    agent_crud_obj = AgentCRUD(session, user)
+    logger.info(f"Agent crud {agent_crud_obj} with user {user} and sessions")
+    return agent_crud_obj
 
 
 async def agent_start_validator(
+    
     body: AgentRunCreate = Body(
         example={
             "goal": "Create business plan for a bagel company",
             "modelSettings": {
-                "customModelName": "gpt-3.5-turbo",
+                "customModelName": settings.azure_openai_deployment_name,
             },
         },
     ),
     crud: AgentCRUD = Depends(agent_crud),
 ) -> AgentRun:
+    logger.info(f"Running agent_start_validator with body {body} and agent crud {crud}")
     id_ = (await crud.create_run(body.goal)).id
-    return AgentRun(**body.dict(), run_id=str(id_))
+    logger.info(f"Agent run id {id_}")
+    agent_run = AgentRun(**body.dict(), run_id=str(id_))
+    logger.info(f"AgentRun: {agent_run}")
+    return agent_run
 
 
 async def validate(body: T, crud: AgentCRUD, type_: Loop_Step) -> T:

@@ -17,7 +17,7 @@ from reworkd_platform.web.api.agent.agent_service.open_ai_agent_service import (
 )
 from reworkd_platform.web.api.agent.model_factory import create_model
 from reworkd_platform.web.api.dependencies import get_current_user
-
+from loguru import logger
 
 def get_agent_service(
     validator: Callable[..., Coroutine[Any, Any, AgentRun]],
@@ -30,9 +30,11 @@ def get_agent_service(
         token_service: TokenService = Depends(get_token_service),
         oauth_crud: OAuthCrud = Depends(OAuthCrud.inject),
     ) -> AgentService:
+        logger.info(f"Getting LLM service agent with AgentRun {run}, user {user}, token_service {token_service} and oauth_crud {oauth_crud}")
         if settings.ff_mock_mode_enabled:
             return MockAgentService()
 
+        logger.info(f"Model settings {run.model_settings}")
         model = create_model(
             settings,
             run.model_settings,
@@ -40,8 +42,9 @@ def get_agent_service(
             streaming=streaming,
             force_model=llm_model,
         )
+        logger.info(f"Model: {model}")
 
-        return OpenAIAgentService(
+        open_ai_agent_service = OpenAIAgentService(
             model,
             run.model_settings,
             token_service,
@@ -49,5 +52,7 @@ def get_agent_service(
             user=user,
             oauth_crud=oauth_crud,
         )
+        logger.info(f"Openai agent service {open_ai_agent_service}")
+        return open_ai_agent_service
 
     return func

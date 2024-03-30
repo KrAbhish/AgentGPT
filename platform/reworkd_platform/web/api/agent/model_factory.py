@@ -6,7 +6,7 @@ from pydantic import Field
 from reworkd_platform.schemas.agent import LLM_Model, ModelSettings
 from reworkd_platform.schemas.user import UserBase
 from reworkd_platform.settings import Settings
-
+from loguru import logger
 
 class WrappedChatOpenAI(ChatOpenAI):
     client: Any = Field(
@@ -33,10 +33,13 @@ def create_model(
     streaming: bool = False,
     force_model: Optional[LLM_Model] = None,
 ) -> WrappedChat:
+    logger.info("Creating LLM model !!!!!")
     use_azure = (
         not model_settings.custom_api_key and "azure" in settings.openai_api_base
     )
-
+    logger.info(f"using azure flag: {use_azure}")
+    # logger.info(f"Settings: {settings}")
+    # logger.info(f"model_settings: {model_settings}")
     llm_model = force_model or model_settings.model
     model: Type[WrappedChat] = WrappedChatOpenAI
     base, headers, use_helicone = get_base_and_headers(settings, model_settings, user)
@@ -50,6 +53,7 @@ def create_model(
         "max_retries": 5,
         "model_kwargs": {"user": user.email, "headers": headers},
     }
+    # logger.info(f"Configuration of model {kwargs}")
 
     if use_azure:
         model = WrappedAzureChatOpenAI
@@ -73,6 +77,7 @@ def get_base_and_headers(
     settings_: Settings, model_settings: ModelSettings, user: UserBase
 ) -> Tuple[str, Optional[Dict[str, str]], bool]:
     use_helicone = settings_.helicone_enabled and not model_settings.custom_api_key
+    logger.info(f"use_helicone: {use_helicone}")
     base = (
         settings_.helicone_api_base
         if use_helicone
@@ -93,5 +98,5 @@ def get_base_and_headers(
         if use_helicone
         else None
     )
-
+    logger.info(f"base {base}, headers {headers}, use_helicone {use_helicone}")
     return base, headers, use_helicone
