@@ -28,10 +28,11 @@ from reworkd_platform.web.api.agent.dependancies import (
     agent_summarize_validator,
 )
 from reworkd_platform.web.api.agent.tools.tools import get_external_tools, get_tool_name
-
+from reworkd_platform.schemas.agent import ModelSettings
 router = APIRouter()
 
 
+modelSettings = ModelSettings()
 @router.post(
     "/start",
 )
@@ -97,7 +98,7 @@ async def summarize(
         get_agent_service(
             validator=agent_summarize_validator,
             streaming=True,
-            llm_model="gpt-3.5-turbo-16k",
+            llm_model=modelSettings.model,
         ),
     ),
 ) -> FastAPIStreamingResponse:
@@ -115,7 +116,7 @@ async def chat(
         get_agent_service(
             validator=agent_chat_validator,
             streaming=True,
-            llm_model="gpt-3.5-turbo-16k",
+            llm_model=modelSettings.model,
         ),
     ),
 ) -> FastAPIStreamingResponse:
