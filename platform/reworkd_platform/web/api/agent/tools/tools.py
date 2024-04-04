@@ -10,17 +10,24 @@ from reworkd_platform.web.api.agent.tools.tool import Tool
 from reworkd_platform.web.api.agent.tools.sales_dummy import SalesDummy
 from reworkd_platform.web.api.agent.tools.conclude import Conclude
 from reworkd_platform.web.api.agent.tools.reason import Reason
+from reworkd_platform.web.api.agent.tools.sales_db_sql import SalesDatabaseSql
+from reworkd_platform.web.api.agent.tools.rca_warehouse import RCAWarehouse
+from reworkd_platform.web.api.agent.tools.ebit_warehouse import EBITWarehouse
+from reworkd_platform.web.api.agent.tools.warehouse import Warehouse
+
 
 
 async def get_user_tools(
     tool_names: List[str], user: UserBase, crud: OAuthCrud
 ) -> List[Type[Tool]]:
-    tools = list(map(get_tool_from_name, tool_names)) + get_default_tools()
+    # tools = list(map(get_tool_from_name, tool_names)) + get_default_tools()
+    tools = list(map(get_tool_from_name, tool_names)) 
     return [tool for tool in tools if await tool.dynamic_available(user, crud)]
 
 
 def get_available_tools() -> List[Type[Tool]]:
-    return get_external_tools() + get_default_tools()
+    # return get_external_tools() + get_default_tools()
+    return get_external_tools() 
 
 
 def get_available_tools_names() -> List[str]:
@@ -30,19 +37,24 @@ def get_available_tools_names() -> List[str]:
 def get_external_tools() -> List[Type[Tool]]:
     return [
         # Wikipedia,  # TODO: Remove if async doesn't work
-        Image,
-        Code,
-        SID,
+        # Image,
+        # Code,
+        # SID,
         SalesDummy,
         Conclude,
         Reason,
-        Search,
+        # Search,
+        SalesDatabaseSql,
+        RCAWarehouse,
+        EBITWarehouse,
+        Warehouse,
     ]
 
 
 def get_default_tools() -> List[Type[Tool]]:
     return [
-        Search,
+        # Search,
+        SalesDatabaseSql,
     ]
 
 
@@ -78,7 +90,7 @@ def get_tool_from_name(tool_name: str) -> Type[Tool]:
 
 
 def get_default_tool() -> Type[Tool]:
-    return Search
+    return SalesDatabaseSql
 
 
 def get_default_tool_name() -> str:

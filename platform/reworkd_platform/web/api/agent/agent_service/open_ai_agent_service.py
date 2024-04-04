@@ -90,7 +90,9 @@ class OpenAIAgentService(AgentService):
     ) -> Analysis:
         logger.info(f"Analyze task")
         user_tools = await get_user_tools(tool_names, self.user, self.oauth_crud)
+        logger.info(f"Selected User tools: {user_tools}")
         functions = list(map(get_tool_function, user_tools))
+        logger.info(f"Functions: {functions}")
         prompt = analyze_task_prompt.format_prompt(
             goal=goal,
             task=task,
@@ -186,7 +188,7 @@ class OpenAIAgentService(AgentService):
         goal: str,
         results: List[str],
     ) -> FastAPIStreamingResponse:
-        self.model.model_name = "gpt-3.5-turbo-16k"
+        self.model.model_name = self.settings.model
         self.model.max_tokens = 8000  # Total tokens = prompt tokens + completion tokens
 
         snippet_max_tokens = 7000  # Leave room for the rest of the prompt
@@ -207,7 +209,7 @@ class OpenAIAgentService(AgentService):
         message: str,
         results: List[str],
     ) -> FastAPIStreamingResponse:
-        self.model.model_name = "gpt-3.5-turbo-16k"
+        self.model.model_name = self.settings.model
         prompt = ChatPromptTemplate.from_messages(
             [
                 SystemMessagePromptTemplate(prompt=chat_prompt),

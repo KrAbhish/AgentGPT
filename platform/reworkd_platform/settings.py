@@ -59,6 +59,10 @@ class Settings(BaseSettings):
     max_tokens: int = "<Should be updated via env>"
     temperature: float = "<Should be updated via env>"
 
+    #Variables for sales db access
+    postgres_username: str =  "<Should be updated via env>"
+    postgres_password: str = "<Should be updated via env>"
+    postgres_server: str = "<Should be updated via env>"
 
     # Helicone
     helicone_api_base: str = "https://oai.hconeai.com/v1"
@@ -108,6 +112,12 @@ class Settings(BaseSettings):
     sid_client_id: Optional[str] = None
     sid_client_secret: Optional[str] = None
     sid_redirect_uri: Optional[str] = None
+
+    #external data source
+    rca_data_path: str =  "<Should be updated via env>"
+    ebit_region_data_path: str =  "<Should be updated via env>"
+    warehouse_data_path: str =  "<Should be updated via env>"
+
 
     @property
     def kafka_consumer_group(self) -> str:
