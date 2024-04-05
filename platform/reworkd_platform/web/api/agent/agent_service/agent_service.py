@@ -20,6 +20,7 @@ class AgentService(Protocol):
         goal: str,
         task: str,
         analysis: Analysis,
+        results: List[str],
     ) -> FastAPIStreamingResponse:
         pass
 

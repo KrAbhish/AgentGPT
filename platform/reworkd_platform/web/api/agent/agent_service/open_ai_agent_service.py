@@ -133,6 +133,7 @@ class OpenAIAgentService(AgentService):
         goal: str,
         task: str,
         analysis: Analysis,
+        results: List[str],
     ) -> StreamingResponse:
         # TODO: More mature way of calculating max_tokens
         if self.model.max_tokens > 3000:
@@ -140,12 +141,14 @@ class OpenAIAgentService(AgentService):
 
         tool_class = get_tool_from_name(analysis.action)
         logger.info(f"Execute task")
+        # logger.infor(f"Previous tasks and its results: {results}")
         return await tool_class(self.model, self.settings.language).call(
             goal,
             task,
             analysis.arg,
             self.user,
             self.oauth_crud,
+            results,
         )
 
     async def create_tasks_agent(

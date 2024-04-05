@@ -65,12 +65,17 @@ async def execute_tasks(
     agent_service: AgentService = Depends(
         get_agent_service(validator=agent_execute_validator, streaming=True),
     ),
+    # results:  AgentSummarize = Depends(agent_summarize_validator),
+    # results: AgentChat = Depends(agent_chat_validator),
+
 ) -> FastAPIStreamingResponse:
-    logger.info(f"Task execution {req_body}")
+    logger.info(f"Task execution {req_body.results}")
+    # logger.info(f"Task execution, previous results {results}")
     return await agent_service.execute_task_agent(
         goal=req_body.goal or "",
         task=req_body.task or "",
-        analysis=req_body.analysis,
+        analysis=req_body.analysis or Analysis(),
+        results=req_body.results or [],
     )
 
 
@@ -102,7 +107,8 @@ async def summarize(
         ),
     ),
 ) -> FastAPIStreamingResponse:
-    logger.info(f"Summarization")
+    logger.info(f"Summarization: req_body {req_body}")
+    # logger.info(f"Summarization")
     return await agent_service.summarize_task_agent(
         goal=req_body.goal or "",
         results=req_body.results,
@@ -121,6 +127,7 @@ async def chat(
     ),
 ) -> FastAPIStreamingResponse:
     logger.info(f"Chat endpoint")
+    logger.info(f"Chat: {req_body}")
     return await agent_service.chat(
         message=req_body.message,
         results=req_body.results,

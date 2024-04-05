@@ -30,7 +30,7 @@ def agent_crud(
     session: AsyncSession = Depends(get_db_session),
 ) -> AgentCRUD:
     agent_crud_obj = AgentCRUD(session, user)
-    logger.info(f"Agent crud {agent_crud_obj} with user {user} and sessions")
+    logger.info(f"Agent crud {agent_crud_obj} with user {user} and session {session}")
     return agent_crud_obj
 
 
@@ -68,15 +68,16 @@ async def agent_analyze_validator(
 
 async def agent_execute_validator(
     body: AgentTaskExecute = Body(
-        example={
-            "goal": "Perform tasks accurately",
-            "task": "Write code to make a platformer",
-            "analysis": {
-                "reasoning": "I like to write code.",
-                "action": "code",
-                "arg": "",
-            },
-        },
+        # example={
+        #     "goal": "Perform tasks accurately",
+        #     "task": "Write code to make a platformer",
+        #     "analysis": {
+        #         "reasoning": "I like to write code.",
+        #         "action": "code",
+        #         "arg": "",
+        #     },
+        #     "results": ["Code written successfully."],
+        # },
     ),
     crud: AgentCRUD = Depends(agent_crud),
 ) -> AgentTaskExecute:
@@ -94,6 +95,7 @@ async def agent_summarize_validator(
     body: AgentSummarize = Body(),
     crud: AgentCRUD = Depends(agent_crud),
 ) -> AgentSummarize:
+    logger.info(f"Running agent_summarize_validator with body {body } and agent crud {crud}")
     return await validate(body, crud, "summarize")
 
 
@@ -101,4 +103,5 @@ async def agent_chat_validator(
     body: AgentChat = Body(),
     crud: AgentCRUD = Depends(agent_crud),
 ) -> AgentChat:
+    logger.info(f"Running agent_chat_validator with body {body} and agent crud {crud}")
     return await validate(body, crud, "chat")

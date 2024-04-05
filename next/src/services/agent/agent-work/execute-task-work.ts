@@ -23,6 +23,7 @@ export default class ExecuteTaskWork implements AgentWork {
     this.parent.messageService.sendMessage({ ...executionMessage, status: "completed" });
 
     // TODO: this should be moved to the api layer
+    console.log("Completed tasks results:", this.parent.model.getCompletedTasks().map((task) => task.result || ""));
     await streamText(
       "/api/agent/execute",
       {
@@ -50,6 +51,8 @@ export default class ExecuteTaskWork implements AgentWork {
     this.result = executionMessage.info || "";
     this.parent.api.saveMessages([executionMessage]);
     this.task = this.parent.model.updateTaskStatus(this.task, "completed");
+  
+  
   };
 
   // eslint-disable-next-line @typescript-eslint/require-await
@@ -62,3 +65,5 @@ export default class ExecuteTaskWork implements AgentWork {
     return true;
   };
 }
+
+

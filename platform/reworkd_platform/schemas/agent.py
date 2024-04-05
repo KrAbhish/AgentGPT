@@ -64,6 +64,7 @@ class AgentTaskAnalyze(AgentRun):
 class AgentTaskExecute(AgentRun):
     task: str
     analysis: Analysis
+    results: List[str] = Field(default=[])
 
 
 class AgentTaskCreate(AgentRun):

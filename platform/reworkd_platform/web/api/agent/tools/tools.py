@@ -14,6 +14,7 @@ from reworkd_platform.web.api.agent.tools.sales_db_sql import SalesDatabaseSql
 from reworkd_platform.web.api.agent.tools.rca_warehouse import RCAWarehouse
 from reworkd_platform.web.api.agent.tools.ebit_warehouse import EBITWarehouse
 from reworkd_platform.web.api.agent.tools.warehouse import Warehouse
+from reworkd_platform.web.api.agent.tools.chat_history import ChatHistory
 
 
 
@@ -43,18 +44,20 @@ def get_external_tools() -> List[Type[Tool]]:
         SalesDummy,
         Conclude,
         Reason,
-        # Search,
+        Search,
         SalesDatabaseSql,
         RCAWarehouse,
         EBITWarehouse,
         Warehouse,
+        ChatHistory,
     ]
 
 
 def get_default_tools() -> List[Type[Tool]]:
     return [
         # Search,
-        SalesDatabaseSql,
+        # SalesDatabaseSql,
+        ChatHistory,
     ]
 
 
@@ -90,7 +93,7 @@ def get_tool_from_name(tool_name: str) -> Type[Tool]:
 
 
 def get_default_tool() -> Type[Tool]:
-    return SalesDatabaseSql
+    return ChatHistory
 
 
 def get_default_tool_name() -> str:
