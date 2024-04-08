@@ -44,7 +44,10 @@ export const useModelSettingsStore = createSelectors(
             ...state.modelSettings,
             // customModelName: "gpt-3.5-turbo",
             customModelName: "gpt-4-32k",
-            maxTokens: Math.min(state.modelSettings.maxTokens, 4000),
+            customTemperature: 0,
+            // customMaxLoops: DEFAULT_MAX_LOOPS_FREE,
+            maxTokens: 5000,
+            // maxTokens: Math.min(state.modelSettings.maxTokens, 4000),
           },
         }),
       }
