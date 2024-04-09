@@ -43,6 +43,7 @@ class Search(Tool):
     description = (
         "Search Google for short up to date searches for simple questions about public information "
         "news and people.\n"
+        "Use the tool only when the current task is related to searching for information about current events."
     )
     public_description = "Search google for information about current events."
     arg_description = "The query argument to search for. This value is always populated and cannot be an empty string."

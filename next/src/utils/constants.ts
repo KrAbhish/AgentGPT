@@ -16,7 +16,7 @@ export const getDefaultModelSettings = (): ModelSettings => {
     language: ENGLISH,
     // customModelName: serverEnv.OPENAI_AZURE_OPENAI_DEPLOYMENT_NAME,
     customModelName: GPT_4_32k,
-    customTemperature: 0.5,
+    customTemperature: 0,
     customMaxLoops: DEFAULT_MAX_LOOPS_FREE,
     maxTokens: 5000,
   };

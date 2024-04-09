@@ -41,7 +41,7 @@ def get_external_tools() -> List[Type[Tool]]:
         # Image,
         # Code,
         # SID,
-        SalesDummy,
+        # SalesDummy,
         Conclude,
         Reason,
         Search,
@@ -56,7 +56,7 @@ def get_external_tools() -> List[Type[Tool]]:
 def get_default_tools() -> List[Type[Tool]]:
     return [
         # Search,
-        # SalesDatabaseSql,
+        SalesDatabaseSql,
         ChatHistory,
     ]
 

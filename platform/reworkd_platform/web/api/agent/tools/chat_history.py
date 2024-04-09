@@ -33,7 +33,7 @@ def chat_history(llm_gpt, language, message: str, results: List[str]):
 
 class ChatHistory(Tool):
     description = (
-       """Should only be used when the query is related to chat history or where the answers to previous questions are referred or needed. """
+        """ This tool should only be used when the current task is related to chat history or where the previous answers are referred or needed."""
     )
     public_description = "Chat History"
     # arg_description = "The query argument to search for. This value is always populated and cannot be an empty string."

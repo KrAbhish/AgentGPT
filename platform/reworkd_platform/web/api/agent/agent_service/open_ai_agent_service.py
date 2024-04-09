@@ -35,6 +35,7 @@ from reworkd_platform.web.api.agent.tools.tools import (
     get_tool_from_name,
     get_tool_name,
     get_user_tools,
+    get_available_tools,
 )
 from reworkd_platform.web.api.agent.tools.utils import summarize
 from reworkd_platform.web.api.errors import OpenAIError
@@ -61,12 +62,17 @@ class OpenAIAgentService(AgentService):
         prompt = ChatPromptTemplate.from_messages(
             [SystemMessagePromptTemplate(prompt=start_goal_prompt)]
         )
+        available_tools = get_available_tools()
+        functions = list(map(get_tool_function, available_tools))
+        tool_descriptions = {tool['name'] : tool['description'] for tool in functions}
+        logger.info(f"Available tools: {tool_descriptions}")
         logger.info(f"Tasks creation prompt: {prompt} ")
         self.token_service.calculate_max_tokens(
             self.model,
             prompt.format_prompt(
                 goal=goal,
                 language=self.settings.language,
+                tools = tool_descriptions,
             ).to_string(),
         )
 
@@ -75,7 +81,7 @@ class OpenAIAgentService(AgentService):
             ChatPromptTemplate.from_messages(
                 [SystemMessagePromptTemplate(prompt=start_goal_prompt)]
             ),
-            {"goal": goal, "language": self.settings.language},
+            {"goal": goal, "language": self.settings.language, "tools":tool_descriptions},
             settings=self.settings,
             callbacks=self.callbacks,
         )

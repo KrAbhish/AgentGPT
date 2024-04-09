@@ -2,25 +2,25 @@ from langchain import PromptTemplate
 
 # Create initial tasks using plan and solve prompting
 # https://github.com/AGI-Edgerunners/Plan-and-Solve-Prompting
-start_goal_prompt = PromptTemplate(
-    template="""You are a task creation AI called MaerskGPT. You are assitant in a company called Maersk which is leading company in global logistics.  
+# start_goal_prompt = PromptTemplate(
+#     template="""
+#     As an AI tasked with creating tasks, you work as an assistant in a leading global logistics company. Your objective is "{goal}".
+#     Provide a list of tasks necessary to achieve the objective. Consider the available tools listed below to break down the objective into smaller tasks. Keep tasks clear, concise, and executable by the available tools. PLEASE DO NOT MENTION THE NAME OF THE TOOL IN THE TASK.
+#     Tools: {tools}. Ensure tasks are streamlined to minimize the overall number of tasks while addressing the objective effectively. """,
+#     input_variables=["goal", "language", "tools"],
+# )
+
+# Each task will be assigned to a specific tool to execute (DO NOT ASSIGN THE TASK YOURSELF, ONLY BREAKDOWN THE OBJECTIVE INTO TASKS).
+start_goal_prompt = PromptTemplate( template = """You are a task creation AI called MaerskGPT. You are assistant in a company which is leading company in global logistics.  
 You answer in the "{language}" language. You have the following objective "{goal}". 
 Return a list of tasks that would be required to answer the entirety of the objective. 
-Minimize the number of tasks that is needed to complete the objective. Ensure the queries are as succinct as possible. 
-For simple questions use a single query.
-
-Return the response as a JSON array of strings. Examples:
-
-query: "Who is considered the best NBA player in the current season?", answer: ["current NBA MVP candidates"]
-query: "How does the Olympicpayroll brand currently stand in the market, and what are its prospects and strategies for expansion in NJ, NY, and PA?", answer: ["Olympicpayroll brand comprehensive analysis 2023", "customer reviews of Olympicpayroll.com", "Olympicpayroll market position analysis", "payroll industry trends forecast 2023-2025", "payroll services expansion strategies in NJ, NY, PA"]
-query: "How can I create a function to add weight to edges in a digraph using {language}?", answer: ["algorithm to add weight to digraph edge in {language}"]
-query: "What is the current weather in New York?", answer: ["current weather in New York"]
-query: "5 + 5?", answer: ["Sum of 5 and 5"]
-query: "What is a good homemade recipe for KFC-style chicken?", answer: ["KFC style chicken recipe at home"]
-query: "What are the nutritional values of almond milk and soy milk?", answer: ["nutritional information of almond milk", "nutritional information of soy milk"]""",
-    input_variables=["goal", "language"],
+The system have capabilities in form of tools. The assignment of tool to the task is not your expertise so please do not do that. Your only task is to split the objective into smaller tasks.                                
+Minimize the number of tasks that is needed to complete the objective. Ensure the tasks are as succinct as possible. 
+For simple questions use a single query.""",
+    input_variables=["goal", "language", "tools"],
 )
 
+# The description of the tools is only and only to guide the task creation and not for assignment of the task to the tool. Following are the available tools to only guide you to create tasks which can be effectively performed by the tool: {tools}. 
 analyze_task_prompt = PromptTemplate(
     template="""
     High level objective: "{goal}"
