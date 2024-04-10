@@ -22,7 +22,7 @@ def get_warehouse_data_tool(llm_gpt):
 
 class RCAWarehouse(Tool):
     description = (
-       "This agent provides the Root cause analysis or RCA regarding warehouse PDP  at each warehouse or site level for every month. It can only provide positive and negative impacting features at site level for any month"
+       "Use this tool to get or retrieve the Root cause analysis or RCA regarding warehouse PDP at each warehouse or site level for every month. It can only provide positive and negative impacting features at site level for any month"
     )
     public_description = "Interact with rca data regarding warehouse."
     # arg_description = "The query argument to search for. This value is always populated and cannot be an empty string."
@@ -32,10 +32,12 @@ class RCAWarehouse(Tool):
     ) -> FastAPIStreamingResponse:
         logger.info(f"Running tool RCAWarehouse with task {task}")
         # chain = LLMChain(llm=self.model, prompt=execute_task_prompt)
-
+        completed_tasks_results = args[-1]
+        logger.info(f"External arguments {args}")
         warehouse_data_tool = get_warehouse_data_tool(self.model)
         prompt = external_data_prompt.format_prompt(
             task=task,
+            previous_results=completed_tasks_results,
         )
         output = {}
         output['output'] = warehouse_data_tool.run(prompt)

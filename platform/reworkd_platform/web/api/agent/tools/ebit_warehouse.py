@@ -11,7 +11,7 @@ from reworkd_platform.web.api.agent.prompts import external_data_prompt
 
 class EBITWarehouse(Tool):
     description = (
-       "Provides Warehouse EBIT at regional level for every month"
+       "Use this tool to get/retreive information regarding Warehouse EBIT at regional level for every month"
     )
     public_description = "Warehouse EBIT."
     # arg_description = "The query argument to search for. This value is always populated and cannot be an empty string."
@@ -33,10 +33,12 @@ class EBITWarehouse(Tool):
         logger.info(f"External arguments {args}")
         logger.info(f"Running tool EBITWarehouse with task {task}")
         # chain = LLMChain(llm=self.model, prompt=execute_task_prompt)
-
+        completed_tasks_results = args[-1]
+        logger.info(f"External arguments {args}")
         warehouse_data_tool = self.get_warehouse_data_tool()
         prompt = external_data_prompt.format_prompt(
             task=task,
+            previous_results=completed_tasks_results,
         )
         output = {}
         output['output'] = warehouse_data_tool.run(prompt)

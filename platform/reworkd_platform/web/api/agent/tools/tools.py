@@ -57,7 +57,10 @@ def get_default_tools() -> List[Type[Tool]]:
     return [
         # Search,
         SalesDatabaseSql,
-        ChatHistory,
+        RCAWarehouse,
+        EBITWarehouse,
+        Warehouse,
+        # ChatHistory,
     ]
 
 
@@ -93,7 +96,7 @@ def get_tool_from_name(tool_name: str) -> Type[Tool]:
 
 
 def get_default_tool() -> Type[Tool]:
-    return ChatHistory
+    return SalesDatabaseSql
 
 
 def get_default_tool_name() -> str:

@@ -2,23 +2,26 @@ from langchain import PromptTemplate
 
 # Create initial tasks using plan and solve prompting
 # https://github.com/AGI-Edgerunners/Plan-and-Solve-Prompting
-# start_goal_prompt = PromptTemplate(
-#     template="""
-#     As an AI tasked with creating tasks, you work as an assistant in a leading global logistics company. Your objective is "{goal}".
-#     Provide a list of tasks necessary to achieve the objective. Consider the available tools listed below to break down the objective into smaller tasks. Keep tasks clear, concise, and executable by the available tools. PLEASE DO NOT MENTION THE NAME OF THE TOOL IN THE TASK.
-#     Tools: {tools}. Ensure tasks are streamlined to minimize the overall number of tasks while addressing the objective effectively. """,
-#     input_variables=["goal", "language", "tools"],
-# )
-
-# Each task will be assigned to a specific tool to execute (DO NOT ASSIGN THE TASK YOURSELF, ONLY BREAKDOWN THE OBJECTIVE INTO TASKS).
-start_goal_prompt = PromptTemplate( template = """You are a task creation AI called MaerskGPT. You are assistant in a company which is leading company in global logistics.  
-You answer in the "{language}" language. You have the following objective "{goal}". 
-Return a list of tasks that would be required to answer the entirety of the objective. 
-The system have capabilities in form of tools. The assignment of tool to the task is not your expertise so please do not do that. Your only task is to split the objective into smaller tasks.                                
-Minimize the number of tasks that is needed to complete the objective. Ensure the tasks are as succinct as possible. 
-For simple questions use a single query.""",
+start_goal_prompt = PromptTemplate(
+    template="""
+    As an AI tasked with creating tasks, you work as an assistant in a leading global logistics company. Your objective is "{goal}".
+    Provide a list of tasks necessary to achieve the objective. Consider the available tools listed below to break down the objective into smaller tasks. Keep tasks clear, concise, and executable by the available tools. 
+    Your only job is to split the objective into smaller tasks. Never assign or refer to tool. Stick to your role as an AI task creation agent.
+    Tools: {tools}. Ensure tasks are streamlined to minimize the overall number of tasks while addressing the objective effectively. 
+    Note you MUST not select a tool.
+    """,
     input_variables=["goal", "language", "tools"],
 )
+
+# Each task will be assigned to a specific tool to execute (DO NOT ASSIGN THE TASK YOURSELF, ONLY BREAKDOWN THE OBJECTIVE INTO TASKS).
+# start_goal_prompt = PromptTemplate( template = """You are a task creation AI called MaerskGPT. You are assistant in a company which is leading company in global logistics.  
+# You answer in the "{language}" language. You have the following objective "{goal}". 
+# Return a list of tasks that would be required to answer the entirety of the objective. 
+# The system have capabilities in form of tools. The assignment of tool to the task is not your expertise so please do not do that. Your only task is to split the objective into smaller tasks.                                
+# Minimize the number of tasks that is needed to complete the objective. Ensure the tasks are as succinct as possible. 
+# For simple questions use a single query.""",
+#     input_variables=["goal", "language", "tools"],
+# )
 
 # The description of the tools is only and only to guide the task creation and not for assignment of the task to the tool. Following are the available tools to only guide you to create tasks which can be effectively performed by the tool: {tools}. 
 analyze_task_prompt = PromptTemplate(
@@ -187,10 +190,10 @@ chat_prompt = PromptTemplate(
 external_data_prompt=  PromptTemplate(
     template= """
         Provide the solution or answer to the asked task mentioned below
-        {task}
+        {task}. Following is the results from previous tasks {previous_results}.
         Let your answer contain a sentence with specifics asked like metric name, metric value, site or region or area name and also include year and month  and computed values for which the task is performed
         """,
-    input_variables=["task"],
+    input_variables=["task", "previous_results"],
 )
 
 
