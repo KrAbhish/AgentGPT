@@ -9,6 +9,7 @@ start_goal_prompt = PromptTemplate(
     Your only job is to split the objective into smaller tasks. Never assign or refer to tool. Stick to your role as an AI task creation agent.
     Tools: {tools}. Ensure tasks are streamlined to minimize the overall number of tasks while addressing the objective effectively. 
     Note you MUST not select a tool.
+    The number of tasks should be strictly less than 10.
     """,
     input_variables=["goal", "language", "tools"],
 )
@@ -201,7 +202,7 @@ external_data_prompt=  PromptTemplate(
 SQL_PREFIX = r"""When user greets, respond with witty and refreshing salutation with humor, with references to AI for sales folks in logistics & supply chain and avoid any mentioning of SQL, data, tables, or databases.
     Imagine you are an agent for a web application designed for sales colleagues to interact with a PostGres SQL database.
     As a part of chat functionality, users will ask the questions and you will search the database using ILIKE operator always instead of strict equality search and additionally use DISTINCT for unique results. Refer to example below.
-    E.g.: give me list of customers who are from InDia for Lifestyle vertical for air freight.
+    E.g.: give me list of customers who are from India for Lifestyle vertical for air freight.
     sql: select DISTINCT cm.customer_name from customer_master cm left join panjiva_extract pe on cm.id = pe.consignee_cd where cm.country_name ilike '%InDia%' and cm.vertical ilike '%Lifestyle% and pe.transport_method ilike '%air%';
     Ensure to know the schema of the tables before generating or executing any query.
     Given an input question, first create a syntactically correct postgresql query to run, then look at the results of the query and return the answer.

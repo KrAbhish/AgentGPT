@@ -154,6 +154,7 @@ class OpenAIAgentService(AgentService):
             analysis.arg,
             self.user,
             self.oauth_crud,
+            self.settings.language,
             results,
         )
 

@@ -23,6 +23,15 @@ import {
 } from "react-icons/fa";
 
 export const TEMPLATE_DATA: TemplateModel[] = [
+  // {
+  //   name: "CompanyGPT",
+  //   icon: <FaChartPie />,
+  //   category: "Business",
+  //   description: "Provides information about a company",
+  //   promptTemplate:
+  //     "Compile 5 potential new customers for logistics business",
+  //   placeholder: "Sales assistant",
+  // },
   {
     name: "SalesGPT",
     icon: <FaChartPie />,
